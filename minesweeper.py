@@ -206,9 +206,12 @@ class MinesweeperAI():
             if c not in self.mines | self.safes:
                 cells.add(c)
 
-        self.knowledge.append(Sentence(cells,count))
+        new = self.knowledge.append(Sentence(cells,count))
 
-        
+        if len(new) > 0:
+            self.knowledge.append(new)
+            
+
         raise NotImplementedError
 
     def make_safe_move(self):
