@@ -254,8 +254,13 @@ class MinesweeperAI():
         This function may use the knowledge in self.mines, self.safes
         and self.moves_made, but should not modify any of those values.
         """
-        # TODO
-        raise NotImplementedError
+        # all moves which are save and not already done
+        safeMove = self.safes - self.moves_made
+        
+        # the first safe move get returned if there is None so return this
+        for checks in safeMove:
+            return checks
+        return None
 
     def make_random_move(self):
         """
