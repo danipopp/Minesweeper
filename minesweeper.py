@@ -229,9 +229,21 @@ class MinesweeperAI():
                     self.check_knowledge()
             
             
-        
-
-        raise NotImplementedError
+        # update knowledge
+        for sentense1 in self.knowledge:
+            for sentense2 in self.knowledge:
+                if sentense1.cells.issubset(sentense2.cells):
+                    newCell = sentense2 - sentense1
+                    newCount = sentense2.cout - sentense1.count
+                    newSentense = Sentence(newCell,newCount)
+                    safes = newSentense.known_safes()
+                    mines = newSentense.known_mines()
+                    if safes:
+                        for safe in safes:
+                            self.mark_safe(safe)
+                    if mines:
+                        for mine in mines:
+                            self.mark_mine(mine)
 
     def make_safe_move(self):
         """
