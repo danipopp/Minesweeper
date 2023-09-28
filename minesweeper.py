@@ -214,6 +214,21 @@ class MinesweeperAI():
         if len(new.cells) > 0:
             self.knowledge.append(new)
             
+        for sentense in self.knowledge:
+            # check for safe and mines places
+            mines = sentense.known_mines()
+            safes = sentense.known_safes()
+
+            if mines:
+                for m in mines:
+                    self.mark_mine(m)
+                    self.check_knowledge()
+            if safes:
+                for s in safes:
+                    self.mark_safe(s)
+                    self.check_knowledge()
+            
+            
         
 
         raise NotImplementedError
