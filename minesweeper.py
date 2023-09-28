@@ -214,27 +214,14 @@ class MinesweeperAI():
         if len(new.cells) > 0:
             self.knowledge.append(new)
             
-        for sentense in self.knowledge:
-            # check for safe and mines places
-            mines = sentense.known_mines()
-            safes = sentense.known_safes()
-
-            if mines:
-                for m in mines:
-                    self.mark_mine(m)
-                    self.check_knowledge()
-            if safes:
-                for s in safes:
-                    self.mark_safe(s)
-                    self.check_knowledge()
-            
+        self.check_knowledge()
             
         # update knowledge
         for sentense1 in self.knowledge:
             for sentense2 in self.knowledge:
                 if sentense1.cells.issubset(sentense2.cells):
-                    newCell = sentense2 - sentense1
-                    newCount = sentense2.cout - sentense1.count
+                    newCell = sentense2.cells - sentense1.cells
+                    newCount = sentense2.count - sentense1.count
                     newSentense = Sentence(newCell,newCount)
                     safes = newSentense.known_safes()
                     mines = newSentense.known_mines()
@@ -269,8 +256,14 @@ class MinesweeperAI():
             1) have not already been chosen, and
             2) are not known to be mines
         """
-        # TODO
-        raise NotImplementedError
+        all = set()
+        # make a set of all 
+        for i in range(0,self.height):
+            for j in range(0,self.width):
+                all.add((i,j))
+        choice = all - self.moves_made - self.mines
+        ret = random.choice(list(choice))
+        return ret
 
     def closeCells(self, cell):
         """
@@ -282,3 +275,18 @@ class MinesweeperAI():
                 if i >= 0 and i < self.height and j >= 0 and j < self.width:
                     cellsClose.add((i,j))
         return cellsClose
+    
+    def check_knowledge(self):
+        for sentense in self.knowledge:
+            # check for safe and mines places
+            mines = sentense.known_mines()
+            safes = sentense.known_safes()
+
+            if mines:
+                for m in mines:
+                    self.mark_mine(m)
+                    self.check_knowledge()
+            if safes:
+                for s in safes:
+                    self.mark_safe(s)
+                    self.check_knowledge()
