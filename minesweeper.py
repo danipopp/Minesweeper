@@ -192,25 +192,29 @@ class MinesweeperAI():
                if they can be inferred from existing knowledge
         """
         # increase the moves made of the init function
-        self.moves_made+=1
+        self.moves_made.add(cell)
 
         # add the safe spot in the safes set of the init function
         self.safes.add(cell)
 
         # check the cells around the cell
         cells = set()
-        for c in self.close_cells(cell):
+        closeNeighbour = self.closeCells(cell)
+        for c in closeNeighbour:
             # need just the cells that are not mines
             if c in self.mines:
                 count-=1
             if c not in self.mines | self.safes:
                 cells.add(c)
 
-        new = self.knowledge.append(Sentence(cells,count))
+        # define the new Sentence
+        new = Sentence(cells,count)
 
-        if len(new) > 0:
+        # if nothing is in there it can't be append in the kknowledge
+        if len(new.cells) > 0:
             self.knowledge.append(new)
             
+        
 
         raise NotImplementedError
 
@@ -240,5 +244,9 @@ class MinesweeperAI():
         """
         Returns all the cells which are around the cell
         """
-        # TODO
-        pass
+        cellsClose = set()
+        for i in range(cell[0]-1,cell[0]+2):
+            for j in range(cell[1]-1,cell[1]+2):
+                if i >= 0 and i < self.height and j >= 0 and j < self.width:
+                    cellsClose.add((i,j))
+        return cellsClose
