@@ -108,7 +108,7 @@ class Sentence():
         if len(self.cells)==self.count:
             return self.cells
         else:
-            return set()
+            return None
 
     def known_safes(self):
         """
@@ -117,7 +117,7 @@ class Sentence():
         if self.count==0:
             return self.cells
         else:
-            return set()
+            return None
 
     def mark_mine(self, cell):
         """
@@ -195,7 +195,7 @@ class MinesweeperAI():
         self.moves_made.add(cell)
 
         # add the safe spot in the safes set of the init function
-        self.safes.add(cell)
+        self.mark_safe(cell)
 
         # check the cells around the cell
         cells = set()
@@ -204,7 +204,7 @@ class MinesweeperAI():
             # need just the cells that are not mines
             if c in self.mines:
                 count-=1
-            if c not in self.mines | self.safes:
+            if c not in self.mines or self.safes:
                 cells.add(c)
 
         # define the new Sentence
@@ -278,15 +278,15 @@ class MinesweeperAI():
     
     def check_knowledge(self):
         for sentense in self.knowledge:
+            if len(sentense.cells) == 0:
+                self.knowledge.remove(sentense)
             # check for safe and mines places
             mines = sentense.known_mines()
             safes = sentense.known_safes()
 
             if mines:
-                for m in mines:
+                for m in mines.copy():
                     self.mark_mine(m)
-                    self.check_knowledge()
             if safes:
-                for s in safes:
+                for s in safes.copy():
                     self.mark_safe(s)
-                    self.check_knowledge()
